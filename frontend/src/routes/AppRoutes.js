@@ -6,6 +6,7 @@ import Adminhome from "../pages/Admin/Adminhome";
 import DemandeAdmin from "../pages/Admin/DemandeAdmin";
 import DemandeDetail from "../pages/Admin/DemandeDetail";
 import Article from "../pages/Admin/Article";
+import StockSuivi from "../pages/Admin/StockSuivi";
 import Profile from "../pages/Profile";
 import Stock from "../pages/Admin/Stock";
 import UserStock from "../pages/Stock/Stock";
@@ -22,7 +23,8 @@ function AppRoutes() {
       <Route path="/login" element={<Login />} />
       <Route path="/adminhome" element={<Adminhome />} />
       <Route path="/demandeAdmin" element={<DemandeAdmin />} />
-       <Route path="/demandeDetail" element={<DemandeDetail />} />
+      <Route path="/stockSuivi" element={<StockSuivi />} />
+      <Route path="/admin/demandes/:id" element={<DemandeDetail />}/>
       <Route path="/article" element={<Article />} />
       <Route path="/UserStock" element={<UserStock />} />
       <Route path="/profile" element={<Profile />} />

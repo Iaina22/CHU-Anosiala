@@ -5,16 +5,23 @@ import logo from "../assets/images/log.png";
 import {FiMenu } from "react-icons/fi";
 
 function Navbar() {
-  const [theme, setTheme] = useState("light");
+  const [theme, setTheme] = useState(() => {
+  return localStorage.getItem("theme") || "light";
+});
   const [menuOpen, setMenuOpen] = useState(false);
 
-  useEffect(() => {
-    if (theme === "dark") {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
-  }, [theme]);
+ useEffect(() => {
+  const root = document.documentElement;
+
+  if (theme === "dark") {
+    root.classList.add("dark");
+    localStorage.setItem("theme", "dark");
+  } else {
+    root.classList.remove("dark");
+    localStorage.setItem("theme", "light");
+  }
+}, [theme]);
+
 
   const toggleTheme = () => {
     setTheme((prev) => (prev === "light" ? "dark" : "light"));
@@ -46,8 +53,8 @@ function Navbar() {
           </Link>
         </li>
         <li className="hidden md:block">
-          <Link to="/mouvements" className="text-blue-600 hover:text-blue-700 hover:underline">
-            Entrées / Sorties
+          <Link to="/stockSuivi" className="text-blue-600 hover:text-blue-700 hover:underline">
+            Stock
           </Link>
         </li>
         <li className="hidden md:block">

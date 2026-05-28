@@ -392,7 +392,7 @@ const exportExcel = () => {
       <div className="max-w-7xl mx-auto p-3 md:p-6">
 
         {/* HEADER */}
-        <div className="mt-20 mb-6">
+        <div className="mt-20 text-sm mb-6">
           <h1 className="text-3xl font-bold text-blue-600 dark:text-white">
             Gestion des Articles
           </h1>
@@ -609,22 +609,22 @@ const exportExcel = () => {
 
 </div>
         {/* TABLE */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow overflow-hidden">
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow overflow-hidden border border-gray-200 dark:border-gray-700">
 
           <div className="overflow-x-auto">
 
             <table className="min-w-full">
 
-              <thead className="bg-gray-200 dark:bg-gray-700">
+              <thead className="bg-blue-600 dark:bg-blue-700 text-white">
                 <tr>
-                  <th className="p-3 text-left">REF</th>
-                  <th className="p-3 text-left">Code compta</th>
-                  <th className="p-3 text-left">Catégorie</th>
-                  <th className="p-3 text-left">Produit</th>
-                  <th className="p-3 text-left">Designation</th>
-                  <th className="p-3 text-left">Quantité</th>
-                  <th className="p-3 text-left">Etat</th>
-                  <th className="p-3 text-left">Created At</th>
+                  <th className="px-4 py-4 text-left text-sm font-semibold">REF</th>
+                  <th className="px-4 py-4 text-left text-sm font-semibold">Code compta</th>
+                  <th className="px-4 py-4 text-left text-sm font-semibold">Catégorie</th>
+                  <th className="px-4 py-4 text-left text-sm font-semibold">Produit</th>
+                  <th className="px-4 py-4 text-left text-sm font-semibold">Designation</th>
+                  <th className="px-4 py-4 text-left text-sm font-semibold">Quantité</th>
+                  <th className="px-4 py-4 text-left text-sm font-semibold">Etat</th>
+                  <th className="px-4 py-4 text-left text-sm font-semibold">Created At</th>
                 </tr>
               </thead>
 
@@ -638,20 +638,20 @@ const exportExcel = () => {
                     <tr key={article.id}
                       className="border-b dark:border-gray-700">
 
-                      <td className="p-3">{article.ref_art}</td>
-                      <td className="p-3">{article.code_compta}</td>
-                      <td className="p-3">{article.nom_cat}</td>
-                      <td className="p-3">{article.produit}</td>
-                      <td className="p-3">{article.designation}</td>
-                      <td className="p-3">{qty}</td>
+                      <td className="px-4 py-4 text-sm text-dark-500 dark:text-gray-400">{article.ref_art}</td>
+                      <td className="px-4 py-4 text-sm text-dark-500 dark:text-gray-400">{article.code_compta}</td>
+                      <td className="px-4 py-4 text-sm text-dark-500 dark:text-gray-400">{article.nom_cat}</td>
+                      <td className="px-4 py-4 text-sm text-dark-500 dark:text-gray-400">{article.produit}</td>
+                      <td className="px-4 py-4 text-sm text-dark-500 dark:text-gray-400">{article.designation}</td>
+                      <td className="px-4 py-4 text-sm text-dark-500 dark:text-gray-400">{qty}</td>
 
-                      <td className="p-3">
+                      <td className="px-4 py-4 text-sm text-dark-500 dark:text-gray-400">
                         <span className={`px-2 py-1 rounded ${status.color}`}>
                           {status.text}
                         </span>
                       </td>
 
-                      <td className="p-3 text-gray-600 dark:text-gray-300">
+                      <td className="px-4 py-4 text-sm text-dark-500 dark:text-gray-400">
                         {article.temstape
                           ? new Date(article.temstape).toLocaleString()
                           : "-"}

@@ -1,5 +1,5 @@
 const Article = require("../models/articleModel");
-
+const db = require("../db");
 // GET ALL
 exports.getArticles = async (req, res) => {
   try {
@@ -46,18 +46,18 @@ exports.addArticle = async (req, res) => {
 // UPDATE STOCK
 exports.updateStock = async (req, res) => {
   try {
+    const { quantite } = req.body;
 
-    const { stock } = req.body;
-
-    await Article.updateStock(req.params.id, stock);
+    await Article.updateStock(req.params.id, quantite);
 
     res.json({ message: "Stock updated" });
 
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: "UPDATE ERROR" });
+    res.status(500).json({ error: err.message });
   }
 };
+
 exports.addArticle = async (req, res) => {
 
   try {

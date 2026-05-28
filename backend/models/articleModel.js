@@ -39,14 +39,13 @@ exports.insert = async (data) => {
 };
 
 // UPDATE STOCK
-exports.updateStock = async (id, stock) => {
-
+exports.updateStock = async (id, quantite) => {
   return await db.query(
     `
     UPDATE ref.articles
     SET quantite = $1
     WHERE id = $2
     `,
-    [stock, id]
+    [quantite, id]
   );
 };

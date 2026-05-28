@@ -16,7 +16,25 @@ export const addDemande = async (data) => {
   const res = await axios.post(`${API}`, data);
   return res.data;
 };
-export const updateDemandeStatus = async (data) => {
-  const res = await axios.put("http://localhost:5000/api/demandes/status", data);
+
+
+
+export const updateDemandeStatus = async (id, status) => {
+  const res = await axios.put(
+    `${API}/${id}/status`,
+    { status }
+  );
+
   return res.data;
+};
+
+export const updateDemande = async (id, data) => {
+
+  const res = await axios.put(
+    `${API}/${id}`,
+    data
+  );
+
+  return res.data;
+
 };

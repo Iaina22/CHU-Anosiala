@@ -4,15 +4,22 @@ import { Moon, Sun } from "lucide-react";
 import logo from "../assets/images/log.png";
 
 function Navbar() {
-  const [theme, setTheme] = useState("light");
+   const [theme, setTheme] = useState(() => {
+  return localStorage.getItem("theme") || "light";
+});
 
   useEffect(() => {
-    if (theme === "dark") {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
-  }, [theme]);
+  const root = document.documentElement;
+
+  if (theme === "dark") {
+    root.classList.add("dark");
+    localStorage.setItem("theme", "dark");
+  } else {
+    root.classList.remove("dark");
+    localStorage.setItem("theme", "light");
+  }
+}, [theme]);
+
 
   const toggleTheme = () => {
     setTheme((prev) => (prev === "light" ? "dark" : "light"));

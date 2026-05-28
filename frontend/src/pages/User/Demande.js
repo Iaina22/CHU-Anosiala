@@ -15,7 +15,7 @@ export default function Demande() {
   const [articles, setArticles] = useState([]);
   const [filteredArticles, setFilteredArticles] = useState([]);
   const [demandes, setDemandes] = useState([]);
-
+  const [selectedGroup, setSelectedGroup] = useState(null);
   // LISTE PRODUITS TEMP
   const [tempDemandes, setTempDemandes] = useState([]);
 
@@ -61,28 +61,25 @@ export default function Demande() {
   };
 
   // ================= FETCH DEMANDES =================
-  const fetchDemandes = useCallback(async () => {
+ const fetchDemandes = useCallback(async () => {
 
-    try {
+  try {
 
-      if (!user_id) return;
+    if (!user_id) return;
 
-      const res = await getDemandesByUser(user_id);
+    const res = await getDemandesByUser(user_id);
 
-      const data = Array.isArray(res)
-        ? res
-        : res?.data || [];
+    const data = Array.isArray(res)
+      ? res
+      : res?.data || [];
 
-      setDemandes(data);
-      console.log(
-  "DEMANDES DETAIL =",
-  JSON.stringify(data, null, 2)
-);
-    } catch (err) {
-      console.log(err);
-    }
+    setDemandes(data);
 
-  }, [user_id]);
+  } catch (err) {
+    console.log(err);
+  }
+
+}, [user_id]);
 
   // ================= LOAD =================
   useEffect(() => {
@@ -90,10 +87,24 @@ export default function Demande() {
     fetchArticles();
   }, []);
 
+
   useEffect(() => {
     fetchDemandes();
   }, [fetchDemandes]);
 
+  useEffect(() => {
+
+  fetchDemandes(); 
+
+  const interval = setInterval(() => {
+
+    fetchDemandes(); 
+
+  }, 3000);
+
+  return () => clearInterval(interval);
+
+}, [fetchDemandes]);
   // ================= CATEGORY CHANGE =================
   const handleCategoryChange = (e) => {
 
@@ -221,7 +232,7 @@ export default function Demande() {
         ...prev,
       ]);
 
-      alert("Demande envoyée");
+      
 
       // RESET
       setTempDemandes([]);
@@ -271,91 +282,97 @@ export default function Demande() {
       {/* ================= LAYOUT ================= */}
       <div className="flex flex-col md:flex-row gap-4 mt-5 px-3 pt-24">
 
-       {/* ================= HISTORIQUE ================= */}
-<div className="w-full md:w-[65%] bg-white dark:bg-gray-800 rounded-xl shadow p-3 max-h-[80vh] overflow-y-auto">
+{/* ================= HISTORIQUE TABLE ================= */}
+<div className="w-full overflow-x-auto bg-white dark:bg-gray-800 rounded-xl shadow p-3">
 
-  <h2 className="text-sm font-bold text-blue-600 mb-3">
-    📜 Historique des demandes
-  </h2>
+  
+ <h2 className="text-sm font-bold text-blue-600 mb-3">
+   Historique des demandes
+</h2>
 
-  {demandes.length === 0 && (
-    <p className="text-xs text-gray-500">
-      Aucune demande
-    </p>
-  )}
+<div className="w-full overflow-x-auto bg-white dark:bg-gray-800 rounded-xl shadow">
 
-  <div className="space-y-3">
+  <table className="w-full text-xs md:text-sm">
 
-    {Object.entries(groupedDemandes).map(([groupId, items], index) => {
+    <thead className="bg-blue-600 text-white">
+      <tr>
+        <th className="p-2 text-left">N°</th>
+        <th className="p-2 text-left">Date</th>
+        <th className="p-2 text-left">Status</th>
+        <th className="p-2 text-center">Action</th>
+      </tr>
+    </thead>
 
-      const date = items[0]?.timestamp || items[0]?.created_at;
+    <tbody>
+      {Object.entries(groupedDemandes).map(([groupId, items], index) => {
 
-      return (
-        <div
-          key={groupId}
-          className="p-3 rounded-lg border bg-white dark:bg-gray-700 text-xs"
-        >
+        const date = items[0]?.timestamp || items[0]?.created_at;
 
-          {/* HEADER DEMANDE */}
-          <div className="flex justify-between items-center mb-2">
-            <p className="font-bold text-blue-600">
-              Demande {index + 1}
-            </p>
 
-            <span
-              className={`px-2 py-1 rounded text-xs font-bold ${
-                items[items.length - 1]?.status === "validé"
+        const status =
+          items.find((i) => i.status === "refusé")?.status ||
+          items.find((i) => i.status === "validé")?.status ||
+          "en attente";
+
+        return (
+          <tr
+            key={groupId}
+            className="border-b dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700"
+          >
+
+            {/* NUM DEMANDE */}
+            <td className="p-2 font-bold text-blue-600">
+              DEM-{index + 1}
+            </td>
+
+
+            {/* DATE */}
+            <td className="p-2 text-gray-500">
+              {date ? new Date(date).toLocaleString() : "-"}
+            </td>
+
+            {/* STATUS GLOBAL */}
+            <td className="p-2">
+              <span className={`px-2 py-1 rounded text-xs font-bold ${
+                status === "validé"
                   ? "bg-green-100 text-green-700"
-                  : items[items.length - 1]?.status === "refusé"
-                  ? "bg-red-200 text-red-700"
-                  : "bg-yellow-200 text-yellow-700"
-              }`}
-            >
-              {items[items.length - 1]?.status || "en attente"}
-            </span>
-          </div>
+                  : status === "refusé"
+                  ? "bg-red-100 text-red-700"
+                  : "bg-yellow-100 text-yellow-700"
+              }`}>
+                {status === "validé"
+                  ? " Accépté"
+                  : status === "refusé"
+                  ? " Réfusè"
+                  : "En attent "}
+              </span>
+            </td>
 
-          
-          {date && (
-            <p className="text-[10px] text-gray-400 mb-2">
-              {new Date(date).toLocaleString()}
-            </p>
-          )}
+            {/* ACTION */}
+            <td className="p-2 text-center">
 
-          {/* ITEMS */}
-          <div className="space-y-2">
-            {items.map((d) => (
-              <div key={d.id} className="border-b pb-2 flex justify-between">
-
-                <div>
-                  <p className="font-semibold text-blue-600">
-                    {d.categorie}
-                  </p>
-
-                  <p className="font-semibold">
-                    {d.produit}
-                  </p>
-
-                  <p className="text-gray-600">
-                    Quantité : {d.quantiter}
-                  </p>
-                </div>
+              <button
+                onClick={() => setSelectedGroup(items)}
+                className="bg-blue-600 hover:bg-blue-700 text-white text-xs px-3 py-1 rounded"
+              >
+                Voir la liste
+              </button>
 
              
+             
 
-              </div>
-            ))}
-          </div>
+            </td>
 
-        </div>
-      );
-    })}
+          </tr>
+        );
+      })}
+    </tbody>
 
-  </div>
+  </table>
 </div>
-
+</div>
         {/* ================= FORM ================= */}
-        <div className="w-full md:w-[30%]">
+        <div className="w-full md:w-[45%]">
 
           <div className="bg-white dark:bg-gray-800 rounded-xl shadow p-4">
 
@@ -496,6 +513,83 @@ export default function Demande() {
         </div>
 
       </div>
+{selectedGroup && (
+  <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
+
+    <div className="bg-white dark:bg-gray-800 w-[90%] md:w-[600px] rounded-xl p-4">
+
+      {/* HEADER */}
+      <div className="flex justify-between items-center mb-2">
+
+
+        <div className="flex ">
+           </div>
+
+      {/* ===== STATUS GLOBAL (IMPORTANT) ===== */}
+      {(() => {
+
+        const status =
+          selectedGroup.find((i) => i.status === "refusé")?.status ||
+          selectedGroup.find((i) => i.status === "validé")?.status ||
+          "en attente";
+
+        return (
+          <div className="text-center mb-4">
+
+            {status === "validé" && (
+              <p className="text-green-600 font-bold text-lg">
+                DEMANDE ACCEPTÉE
+              </p>
+            )}
+
+            {status === "refusé" && (
+              <p className="text-red-600 font-bold text-lg">
+                DEMANDE REFUSÉE
+              </p>
+            )}
+
+            {status === "en attente" && (
+              <p className="text-yellow-600 font-bold text-lg">
+                DEMANDE EN ATTENTE
+              </p>
+            )}
+
+          </div>
+        );
+
+      })()}
+
+      
+
+  <button
+    onClick={() => setSelectedGroup(null)}
+    className="text-black dark:text-white text-xl font-bold hover:scale-110 transition"
+  >
+    ✕
+  </button>
+</div>
+
+     
+      {/* ===== LISTE PRODUITS (SANS STATUS) ===== */}
+      <div className="space-y-2 max-h-[350px] overflow-y-auto">
+
+        {selectedGroup.map((d) => (
+          <div key={d.id} className="border p-2 rounded text-sm">
+
+            <p className="font-bold text-blue-600">{d.categorie}</p>
+            <p>{d.produit}</p>
+            <p>Quantité: {d.quantiter}</p>
+
+            
+          </div>
+        ))}
+
+      </div>
+     
+
+    </div>
+  </div>
+)}
     </div>
   );
 }

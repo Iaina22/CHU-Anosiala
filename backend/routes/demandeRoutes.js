@@ -3,6 +3,9 @@ const router = express.Router();
 
 const controller = require("../controllers/demandeController");
 
+const { updateDemandeStatus } = require("../controllers/demandeController");
+
+
 
 router.get("/all", controller.getAllDemandes);
 
@@ -10,6 +13,10 @@ router.get("/all", controller.getAllDemandes);
 router.get("/user/:id", controller.getDemandesByUser);
 
 router.post("/", controller.addDemande);
-router.put("/status", controller.updateDemandeStatus);
+
+// UPDATE STATUS
+// UPDATE STATUS
+router.put("/:id/status", updateDemandeStatus);
+
 
 module.exports = router;

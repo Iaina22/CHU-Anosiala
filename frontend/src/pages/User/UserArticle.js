@@ -74,171 +74,153 @@ export default function Article() {
 
   return (
 
-    <div className="min-h-screen bg-gray-100 dark:bg-gray-900">
+  <div className="min-h-screen bg-gray-100 dark:bg-gray-900">
 
-      <Navbar />
+    <Navbar />
 
-      <div className="max-w-7xl mx-auto p-3 md:p-6">
+    <div className="max-w-7xl mx-auto mt-5 p-2 sm:p-3 md:p-4">
 
-        {/* HEADER */}
-        <div className="mt-20 mb-6 text-center md:text-left">
+      {/* HEADER */}
+      <div className="mt-16 mb-4 text-center md:text-left">
 
-          <h1 className="text-3xl font-bold text-blue-600 dark:text-white">
-            Articles Disponibles
-          </h1>
+        <h1 className="text-lg sm:text-xl md:text-2xl font-bold text-blue-600 dark:text-white">
+          Articles
+        </h1>
 
-          <p className="text-gray-500 dark:text-gray-300 mt-1">
-            Liste des matériels disponibles
-          </p>
+        <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-300 mt-1">
+          Matériels disponibles
+        </p>
 
-        </div>
+      </div>
 
-        {/* SEARCH */}
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow p-2 mb-6">
+      {/* SEARCH */}
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow p-2 mb-4">
 
-          <div className="flex items-center gap-2 border dark:border-gray-700 rounded-xl px-2 py-3">
+        <div className="flex items-center gap-2 border dark:border-gray-700 rounded-lg px-2 py-2">
 
-            <FiSearch className="text-gray-500" />
+          <FiSearch className="text-gray-500 text-sm" />
 
-            <input
-              type="text"
-              placeholder="Recherche article..."
-              className="w-full bg-transparent outline-none dark:text-white"
-              value={search}
-              onChange={(e) =>
-                setSearch(e.target.value)
-              }
-            />
-
-          </div>
-
-        </div>
-
-        {/* EMPTY */}
-        {filteredCategories.length === 0 && (
-
-          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow p-10 text-center">
-
-            <FiPackage className="mx-auto text-5xl text-gray-400 mb-3" />
-
-            <h2 className="text-xl font-bold dark:text-white">
-              Aucun article trouvé
-            </h2>
-
-          </div>
-        )}
-
-        {/* CATEGORY */}
-        <div className="space-y-6">
-
-          {filteredCategories.map((category) => {
-
-            const categoryArticles =
-              groupedArticles[category];
-
-            return (
-
-              <div
-                key={category}
-                className="bg-white dark:bg-gray-800 rounded-2xl shadow overflow-hidden"
-              >
-
-                {/* CATEGORY HEADER */}
-                <div className="bg-blue-500 text-white px-1 md:px-5 py-2 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-
-                  <div>
-
-                    <h2 className="text-lg sm:text-xl font-bold">
-                      {category}
-                    </h2>
-
-                    <p className="text-sm text-blue-100">
-                      {categoryArticles.length} article(s)
-                    </p>
-
-                  </div>
-
-                  <FiBox className="text-3xl" />
-
-                </div>
-
-                {/* ARTICLES */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 p-4">
-
-                  {categoryArticles
-                    .filter((article) =>
-
-                      article.produit?.toLowerCase().includes(search.toLowerCase()) ||
-                      article.designation?.toLowerCase().includes(search.toLowerCase()) ||
-                      article.code_compta?.toLowerCase().includes(search.toLowerCase()) ||
-                      article.ref_art?.toLowerCase().includes(search.toLowerCase())
-
-                    )
-                    .map((article) => {
-
-                      return (
-
-                        <div
-                          key={article.id}
-                          className="border dark:border-gray-700 rounded-2xl p-1 sm:p-4 hover:shadow-lg transition duration-300 bg-gray-50 dark:bg-gray-900"
-                        >
-
-                          {/* TOP */}
-                          <div className="mb-4">
-
-                            <h3 className="font-bold text-base sm:text-lg text-green-600 dark:text-white">
-                              {article.produit}
-                            </h3>
-
-                            <p className="text-sm text-gray-500">
-                              {article.designation}
-                            </p>
-
-                          </div>
-
-                          {/* INFOS */}
-                          <div className="space-y-2 sm:space-y-3 text-sm">
-
-                            <div className="flex justify-between items-center">
-
-                              <span className="text-gray-500 dark:text-gray-400">
-                                Référence
-                              </span>
-
-                              <span className="font-semibold dark:text-white">
-                                {article.ref_art}
-                              </span>
-
-                            </div>
-
-                            <div className="flex justify-between items-center">
-
-                              <span className="text-gray-500 dark:text-gray-400">
-                                Code compta
-                              </span>
-
-                              <span className="font-semibold text-blue-600">
-                                {article.code_compta}
-                              </span>
-
-                            </div>
-
-                          </div>
-
-                        </div>
-                      );
-                    })}
-
-                </div>
-
-              </div>
-            );
-          })}
+          <input
+            type="text"
+            placeholder="Recherche..."
+            className="w-full bg-transparent outline-none text-sm dark:text-white"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
 
         </div>
 
       </div>
 
+      {/* EMPTY */}
+      {filteredCategories.length === 0 && (
+
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow p-6 text-center">
+
+          <FiPackage className="mx-auto text-3xl text-gray-400 mb-2" />
+
+          <h2 className="text-sm sm:text-base font-bold dark:text-white">
+            Aucun article trouvé
+          </h2>
+
+        </div>
+
+      )}
+
+      {/* CATEGORY LIST */}
+      <div className="space-y-4">
+
+        {filteredCategories.map((category) => {
+
+          const categoryArticles = groupedArticles[category];
+
+          return (
+
+            <div
+              key={category}
+              className="bg-white dark:bg-gray-800 rounded-xl shadow overflow-hidden"
+            >
+
+              {/* CATEGORY HEADER */}
+              <div className="bg-blue-500 text-white px-3 py-2 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1">
+
+                <div>
+
+                  <h2 className="text-sm sm:text-base md:text-lg font-bold">
+                    {category}
+                  </h2>
+
+                  <p className="text-xs text-blue-100">
+                    {categoryArticles.length} article(s)
+                  </p>
+
+                </div>
+
+                <FiBox className="text-base sm:text-lg" />
+
+              </div>
+
+              {/* ARTICLES GRID */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 p-2 sm:p-3">
+
+                {categoryArticles
+                  .filter((article) =>
+                    article.produit?.toLowerCase().includes(search.toLowerCase()) ||
+                    article.designation?.toLowerCase().includes(search.toLowerCase()) ||
+                    article.code_compta?.toLowerCase().includes(search.toLowerCase()) ||
+                    article.ref_art?.toLowerCase().includes(search.toLowerCase())
+                  )
+                  .map((article) => (
+
+                    <div
+                      key={article.id}
+                      className="border dark:border-gray-700 rounded-lg p-2 bg-gray-50 dark:bg-gray-900 hover:shadow-md transition"
+                    >
+
+                      {/* TITLE */}
+                      <h3 className="font-semibold text-sm text-green-600 dark:text-white">
+                        {article.produit}
+                      </h3>
+
+                      <p className="text-xs text-gray-500 dark:text-gray-300 mb-2">
+                        {article.designation}
+                      </p>
+
+                      {/* INFOS */}
+                      <div className="text-xs space-y-1">
+
+                        <div className="flex justify-between">
+                          <span className="text-gray-500">Ref</span>
+                          <span className="font-semibold dark:text-white">
+                            {article.ref_art}
+                          </span>
+                        </div>
+
+                        <div className="flex justify-between">
+                          <span className="text-gray-500">Compta</span>
+                          <span className="font-semibold text-blue-600">
+                            {article.code_compta}
+                          </span>
+                        </div>
+
+                      </div>
+
+                    </div>
+
+                  ))}
+
+              </div>
+
+            </div>
+
+          );
+
+        })}
+
+      </div>
+
     </div>
-  );
+
+  </div>
+);
 }

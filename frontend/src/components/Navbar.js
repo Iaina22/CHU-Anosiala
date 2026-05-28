@@ -4,16 +4,22 @@ import logo from "../assets/images/log.png";
 import { Link } from "react-router-dom";
 
 function Navbar() {
-  const [theme, setTheme] = useState("light");
+ const [theme, setTheme] = useState(() => {
+  return localStorage.getItem("theme") || "light";
+});
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    if (theme === "dark") {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
-  }, [theme]);
+  const root = document.documentElement;
+
+  if (theme === "dark") {
+    root.classList.add("dark");
+    localStorage.setItem("theme", "dark");
+  } else {
+    root.classList.remove("dark");
+    localStorage.setItem("theme", "light");
+  }
+}, [theme]);
 
   const toggleTheme = () => {
     setTheme((prev) => (prev === "light" ? "dark" : "light"));
@@ -25,7 +31,7 @@ function Navbar() {
 
   return (
     <nav
-      className="fixed top-0 left-0 w-full z-[1000] 
+       className="fixed top-0 left-0 w-full z-[1000] 
                  flex justify-between items-center px-4 py-2
                  md:left-1/2 md:-translate-x-1/2 md:w-[90%] 
                  md:bg-white/65 md:backdrop-blur-md md:border md:border-black/10 md:rounded-xl md:shadow-md
@@ -42,15 +48,23 @@ function Navbar() {
 
       {/* DESKTOP LINKS */}
       <ul className="hidden md:flex list-none gap-6 items-center">
-        <li><a href="#articles" className="text-[#0f5ed7]  hover:text-[#206fe6] hover:underline">Articles</a></li>
-        <li><a href="#stocks" className="text-[#0f5ed7] hover:text-[#206fe6] hover:underline">Gestion des stock</a></li>
-        <li><a href="#demandes" className="text-[#0f5ed7]  hover:text-[#206fe6] hover:underline">Demandes</a></li>
-        <li><a href="#contacts" className="text-[#0f5ed7]  hover:text-[#206fe6] hover:underline">Contacts</a></li>
+        <li><a href="#articles" className="text-blue-600 font-semibold hover:text-blue-700 hover:underline">Articles</a></li>
+        <li><a href="#stocks" className="text-blue-600 font-semibold hover:text-blue-700 hover:underline">Gestion des stock</a></li>
+        <li><a href="#demandes" className="text-blue-600 font-semibold hover:text-blue-700 hover:underline">Demandes</a></li>
+        <li><a href="#contacts" className="text-blue-600 font-semibold hover:text-blue-700 hover:underline">Contacts</a></li>
 
-        <Link to="/login" className="px-6 py-2 bg-white text-[#0f5ed7] border-2 border-[#0f5ed7] rounded-lg font-bold hover:opacity-90">
-          Connexion
-        </Link>
-
+            <Link
+  to="/login"
+  onClick={handleOptionClick}
+  className="px-4 py-2 rounded-lg font-semibold text-sm md:text-base
+  bg-blue-600 text-white border border-blue-600
+  hover:bg-blue-700 hover:border-blue-700
+  dark:bg-cyan-600 dark:border-cyan-600 dark:text-white
+  dark:hover:bg-cyan-500
+  transition-all duration-300 shadow-md"
+>
+  Connexion
+</Link>
         <li onClick={toggleTheme} className="cursor-pointer flex items-center">
           {theme === "light" ? <Moon size={22} /> : <Sun size={22} />}
         </li>
@@ -64,7 +78,7 @@ function Navbar() {
         {/* Connexion fix couleur vert */}
         <Link
           to="/login"
-          className="px-3 py-1 bg-gray-900 text-white rounded-md text-sm font-bold"
+          className="text-blue-600 hover:text-blue-700 hover:underline"
         >
           Connexion
         </Link>
@@ -80,10 +94,10 @@ function Navbar() {
       {open && (
         <div className="absolute top-full left-0 w-full bg-gray-200 dark:bg-[#2a2a2a] shadow-md md:hidden">
           <ul className="flex flex-col items-center gap-4 py-4">
-            <li><a href="#articles" onClick={handleOptionClick} className="text-[#0f5ed7] ">Articles</a></li>
-            <li><a href="#stocks" onClick={handleOptionClick} className="text-[#0f5ed7] ">Gestion des stock</a></li>
-            <li><a href="#demandes" onClick={handleOptionClick} className="text-[#0f5ed7] ">Demandes</a></li>
-            <li><a href="#contacts" onClick={handleOptionClick} className="text-[#0f5ed7] ">Contacts</a></li>
+            <li><a href="#articles" onClick={handleOptionClick} className="text-blue-600 hover:text-blue-700 hover:underline">Articles</a></li>
+            <li><a href="#stocks" onClick={handleOptionClick} className="text-blue-600 hover:text-blue-700 hover:underline ">Gestion des stock</a></li>
+            <li><a href="#demandes" onClick={handleOptionClick} className="text-blue-600 hover:text-blue-700 hover:underline">Demandes</a></li>
+            <li><a href="#contacts" onClick={handleOptionClick} className="text-blue-600 hover:text-blue-700 hover:underline ">Contacts</a></li>
           </ul>
         </div>
       )}

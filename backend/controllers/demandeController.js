@@ -51,8 +51,8 @@ exports.addDemande = async (req, res) => {
         produit,
         quantiter,
         designation,
-        status || "en attente",     // ✅ FIX SAFE DEFAULT
-        demande_group || null       // ✅ FIX SAFE DEFAULT
+        status || "en attente",
+        demande_group || null
       ]
     );
 
@@ -79,19 +79,36 @@ exports.getAllDemandes = async (req, res) => {
     res.status(500).json({ error: "Erreur serveur" });
   }
 };
+
+
+// UPDATE STATUS DEMANDE
 exports.updateDemandeStatus = async (req, res) => {
   try {
-    const { id, status } = req.body;
+
+    const { status } = req.body;
+    const { id } = req.params;
 
     await pool.query(
-      "UPDATE ref.demandes SET status=$1 WHERE demande_group=$2",
+      `
+      UPDATE ref.demandes
+      SET status = $1
+      WHERE id = $2
+      `,
       [status, id]
     );
 
-    res.json({ message: "Status updated" });
+    res.json({
+      success: true,
+      message: "Status updated",
+    });
 
   } catch (err) {
-    console.log(err);
-    res.status(500).json({ error: "Erreur serveur" });
+
+    console.error("UPDATE STATUS ERROR:", err);
+
+    res.status(500).json({
+      success: false,
+      error: err.message,
+    });
   }
 };
