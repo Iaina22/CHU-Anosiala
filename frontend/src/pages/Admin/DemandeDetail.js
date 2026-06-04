@@ -51,19 +51,7 @@ export default function DemandeDetail() {
     fetchData();
   }, [fetchData]);
 
-  // 🔥 AUTO REFRESH PAGE
-useEffect(() => {
-
-  const interval = setInterval(() => {
-
-    fetchData();
-
-  }, 3000); 
-
-  return () => clearInterval(interval);
-
-}, [fetchData]);
-
+  
   const first = demandes[0];
 
   // ================= STOCK =================
@@ -74,7 +62,7 @@ useEffect(() => {
         String(produit).toLowerCase().trim()
     );
 
-    return article?.quantite || 0; // ✅ ONLY quantite
+    return article?.quantite || 0; 
   };
 const updateQty = async (id, value) => {
 
@@ -158,7 +146,7 @@ const setGlobalStatus = async (status) => {
               newStock
             );
 
-            // 🔥 UPDATE STOCK DIRECT FRONT
+            
             setArticles((prev) =>
               prev.map((a) =>
                 a.id === article.id
@@ -199,11 +187,7 @@ const setGlobalStatus = async (status) => {
 
     // 🔥 UPDATE FRONT STATUS DIRECT
     setDemandes(updated);
-
-    // 🔥 REFRESH DATA
     await fetchData();
-
-    // 🔥 REDIRECT PAGE ADMIN
     navigate("/demandeAdmin");
 
   } catch (err) {
