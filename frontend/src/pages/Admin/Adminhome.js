@@ -277,19 +277,19 @@ return (
           <td className="px-4 py-4 text-sm text-dark-500 dark:text-gray-400">{user.phone ?? "-"}</td>
           <td className="px-4 py-4 text-sm text-dark-500 dark:text-gray-400">{user.role ?? "-"}</td>
           <td className="px-4 py-4 text-sm text-dark-500 dark:text-gray-400">••••••</td>
-          <td className="border p-2 ">
-            <span
-              className={`bg-green-600 text-white px-3 py-1 text-xs rounded ${
-                user.status === "active"
-                  ? "bg-green-600"
-                  : user.status === "rejected"
-                  ? "bg-red-600"
-                  : "bg-orange-500"
-              }`}
-            >
-              {user.status ?? "pending"}
-            </span>
-          </td>
+      <td className="border p-2">
+  <span
+    className={`text-white px-3 py-1 text-xs rounded ${
+      user.status === "active"
+        ? "bg-green-600"
+        : user.status === "rejected"
+        ? "bg-red-600"
+        : "bg-orange-500"
+    }`}
+  >
+    {user.status ?? "pending"}
+  </span>
+</td>
           <td className="border p-2">
             {user.status === "pending" ? (
               <>

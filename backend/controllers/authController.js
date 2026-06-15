@@ -8,6 +8,18 @@ exports.register = async (req, res) => {
   try {
     const hashedPassword = await bcrypt.hash(mdp, 10);
 
+    // Vérification dans ref.personel
+    const refCheck = await userModel.checkRefPersonnel(
+      nom,
+      prenom,
+      cin
+    );
+
+    // Détermination du status
+    const status =
+      refCheck.rows.length > 0 ? "active" : "pending";
+
+    // Création utilisateur
     const result = await userModel.createUser({
       nom,
       prenom,
@@ -18,21 +30,29 @@ exports.register = async (req, res) => {
       email,
       phone,
       role,
-      password_hash: hashedPassword
+      password_hash: hashedPassword,
+      status
     });
 
-    res.json({
+    return res.status(200).json({
       success: true,
-      message: "Inscription réussie",
-      user: result.rows[0]
+      message:
+        status === "active"
+          ? "Compte validé automatiquement"
+          : "Compte en attente de validation",
+      userId: result.rows[0].id,
+      status
     });
 
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Erreur serveur" });
+    console.error("REGISTER ERROR FULL:", err);
+
+    return res.status(500).json({
+      success: false,
+      message: err.message
+    });
   }
 };
-
 // ================= LOGIN =================
 exports.login = async (req, res) => {
   const { prenom, mdp } = req.body;

@@ -68,7 +68,7 @@ export default function Register() {
     const data = await response.json();
 
     if (data.success) {
-      setMessage("Inscription en attente de validation...");
+     setMessage(data.message);
 
       const user = {
         id: data.userId,
@@ -100,10 +100,13 @@ export default function Register() {
         mdp: "",
         confirmMdp: "",
       });
-      setTimeout(() => {
+        setTimeout(() => {
+      if (data.status === "active") {
+        navigate("/login");
+      } else {
         navigate("/"); 
-      }, 1500);
-
+      }
+    }, 2000);
     } else {
       setMessage(data.message);
     }
@@ -119,11 +122,11 @@ export default function Register() {
     <Navbar />
 
     {/* TOAST */}
-    {message && (
-      <div className="fixed top-5 left-1/2 -translate-x-1/2 bg-blue-600 text-white px-5 py-2 rounded-lg shadow-lg animate-bounce z-50">
-        {message}
-      </div>
-    )}
+   {message && (
+  <div className="fixed top-5 left-1/2 -translate-x-1/2 bg-blue-600 text-white px-5 py-2 rounded-lg shadow-xl animate-bounce z-[999999]">
+    {message}
+  </div>
+)}
 
   <div className="w-[80%] mt-2 max-w-sm md:max-w-[800px] bg-white dark:bg-gray-800 rounded-xl flex flex-col md:flex-row overflow-hidden shadow-2xl">
 
@@ -213,14 +216,24 @@ export default function Register() {
               <input type="text" name="adresse" placeholder="Adresse" value={formData.adresse} onChange={handleChange} required
                 className="p-1 rounded-lg border border-gray-300 focus:border-blue-600 w-full md:w-4/5" />
 
-              <select name="role" value={formData.role} onChange={handleChange} required
-                className="p-1 rounded-lg border border-gray-300 focus:border-blue-600 w-full md:w-4/5">
-                <option value="">Choisir un rôle</option>
-                <option value="Admin">Admin</option>
-                <option value="Comptable">Comptable</option>
-                <option value="Magasinier">Magasinier</option>
-                <option value="Médecin">Médecin</option>
-              </select>
+              <select
+  name="role"
+  value={formData.role}
+  onChange={handleChange}
+  required
+  className="p-1 rounded-lg border border-gray-300 focus:border-blue-600 w-full md:w-4/5"
+>
+  <option value="">Choisir un rôle</option>
+
+  <option value="1">Administrateur</option>
+  <option value="2">Direction</option>
+  <option value="3">Gestionnaire de Stock</option>
+  <option value="4">Personnel Médical</option>
+  <option value="5">Pharmacien</option>
+  <option value="6">Technicien</option>
+  <option value="7">Agent Administratif</option>
+  <option value="8">Agent de Service</option>
+</select>
 
               <input type="password" name="mdp" placeholder="Mot de passe" value={formData.mdp} onChange={handleChange} required
                 className="p-1 rounded-lg border border-gray-300 focus:border-blue-600 w-full md:w-4/5" />
