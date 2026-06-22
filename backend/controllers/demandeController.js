@@ -1,4 +1,6 @@
 const pool = require("../db");
+const Historique = require("../models/historiqueModel");
+const Article = require("../models/articleModel");
 
 // GET demandes par user
 exports.getDemandesByUser = async (req, res) => {
@@ -81,34 +83,91 @@ exports.getAllDemandes = async (req, res) => {
 };
 
 
-// UPDATE STATUS DEMANDE
+// ================= UPDATE STATUS + STOCK =================
 exports.updateDemandeStatus = async (req, res) => {
   try {
-
     const { status } = req.body;
     const { id } = req.params;
 
+    // ================= 1. GET DEMANDE =================
+    const demandeRes = await pool.query(
+      `SELECT * FROM ref.demandes WHERE id = $1`,
+      [id]
+    );
+
+    if (demandeRes.rows.length === 0) {
+      return res.status(404).json({ message: "Demande introuvable" });
+    }
+
+    const demande = demandeRes.rows[0];
+
+    // ================= 2. UPDATE SIMPLE SI PAS VALIDÉ =================
+    if (status.toLowerCase() !== "valide") {
+      await pool.query(
+        `UPDATE ref.demandes SET status = $1 WHERE id = $2`,
+        [status, id]
+      );
+
+      return res.json({ message: "Status updated" });
+    }
+
+    // ================= 3. GET ARTICLE (SAFE MATCH) =================
+    const articleRes = await pool.query(
+      `SELECT * FROM ref.articles WHERE LOWER(produit) = LOWER($1)`,
+      [demande.produit]
+    );
+
+    if (articleRes.rows.length === 0) {
+      return res.status(404).json({ message: "Article introuvable" });
+    }
+
+    const article = articleRes.rows[0];
+
+    // ================= 4. CHECK STOCK =================
+    const quantiteDemande = Number(demande.quantiter);
+    const stockActuel = Number(article.quantite);
+
+    if (stockActuel < quantiteDemande) {
+      return res.status(400).json({ message: "Stock insuffisant" });
+    }
+
+    // ================= 5. UPDATE STOCK =================
     await pool.query(
-      `
-      UPDATE ref.demandes
-      SET status = $1
-      WHERE id = $2
-      `,
-      [status, id]
+      `UPDATE ref.articles
+       SET quantite = quantite - $1
+       WHERE id = $2`,
+      [quantiteDemande, article.id]
+    );
+
+    // ================= 6. INSERT HISTORIQUE (NOMBOARINA ETO) =================
+    const stockRecent = stockActuel;               // Ny stock teo aloha talohan'ny fampihenana
+    const stockFin = stockActuel - quantiteDemande; // Ny sanda sisa tavela ao amin'ny stock
+
+    await pool.query(
+      `INSERT INTO ref.historique 
+      (id_article, id_demande, type_mouvement, stock_recent, quantite_mvmt, stock_actuel)
+      VALUES ($1, $2, 'SORTIE', $3, $4, $5)`,
+      [
+        article.id, 
+        demande.id, 
+        stockRecent, 
+        quantiteDemande, 
+        stockFin
+      ]
+    );
+
+    // ================= 7. UPDATE DEMANDE =================
+    await pool.query(
+      `UPDATE ref.demandes SET status = 'validé' WHERE id = $1`,
+      [id]
     );
 
     res.json({
-      success: true,
-      message: "Status updated",
+      message: "Demande validée + stock mis à jour"
     });
 
   } catch (err) {
-
-    console.error("UPDATE STATUS ERROR:", err);
-
-    res.status(500).json({
-      success: false,
-      error: err.message,
-    });
+    console.error("UPDATE ERROR:", err);
+    res.status(500).json({ error: "SERVER ERROR" });
   }
 };
