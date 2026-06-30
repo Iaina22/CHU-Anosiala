@@ -130,7 +130,7 @@ export default function Register() {
 
   <div className="w-[80%] mt-2 max-w-sm md:max-w-[800px] bg-white dark:bg-gray-800 rounded-xl flex flex-col md:flex-row overflow-hidden shadow-2xl">
 
-      {/* LEFT (hidden on phone, visible on PC) */}
+     
       <div className="hidden md:flex w-1/2 bg-gradient-to-br from-blue-700 to-blue-400 relative flex-col justify-center items-center text-white rounded-tr-[120px] rounded-br-[120px] overflow-hidden">
         <div className="z-10 -mt-20 text-center">
           <img src={logo} alt="logo" className="w-[90px] mx-auto rounded-lg" />
@@ -144,7 +144,7 @@ export default function Register() {
       </div>
 
       {/* RIGHT (form) */}
-      <div className="w-full md:w-1/2 p-6 md:p-8 flex flex-col justify-center">
+      <div className="w-full md:w-1/2 p-6 ml-10  md:p-8 flex flex-col justify-center">
         <h2 className="mb-4 text-lg md:text-xl font-bold text-blue-500 text-center md:text-left">Inscrivez-vous !</h2>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-3 items-center md:items-start">

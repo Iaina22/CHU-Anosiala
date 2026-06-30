@@ -15,11 +15,9 @@ export default function Article() {
   const fetchArticles = async () => {
     try {
       const data = await getArticles();
-
       const dispo = data.filter(
         (a) => Number(a.quantite ?? a.stock ?? 0) > 0
       );
-
       setArticles(dispo);
     } catch (error) {
       console.log(error);
@@ -55,11 +53,13 @@ export default function Article() {
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900">
       <Navbar />
 
-      <div className="max-w-7xl mx-auto p-4 mt-16 grid grid-cols-1 lg:grid-cols-4 gap-4">
+    
+      <div className="w-full px-4 mt-5 pt-24 grid grid-cols-1 lg:grid-cols-4 gap-4">
 
         {/* ========== SIDEBAR CATEGORY ========== */}
-        <div className="bg-white dark:bg-gray-800 mt-6 rounded-xl shadow p-3 h-fit">
-          <h2 className=" font-bold text-[#0f5ed7] dark:text-cyan-300 mb-2">
+        {/* Nesorina ilay mt-6 mba hifanitsy tsara amin'ny Main Content eo ankavanany */}
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow p-3 h-fit">
+          <h2 className="font-bold text-[#0f5ed7] dark:text-cyan-300 mb-2">
             Catégories
           </h2>
 
@@ -81,10 +81,11 @@ export default function Article() {
         </div>
 
         {/* ========== MAIN CONTENT ========== */}
-        <div className="lg:col-span-3 ">
+        <div className="lg:col-span-3">
 
           {/* HEADER */}
-          <div className="mb-3 mt-5">
+          {/* Nesorina ilay mt-5 mba tsy hidina ambany loatra */}
+          <div className="mb-3">
             <h1 className="text-xl font-bold text-blue-600 dark:text-white">
               Articles
             </h1>
@@ -146,8 +147,6 @@ export default function Article() {
                       {article.code_compta}
                     </span>
                   </div>
-
-                 
                 </div>
               </div>
             ))}
