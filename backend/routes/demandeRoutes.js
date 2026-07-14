@@ -18,5 +18,9 @@ router.post("/", controller.addDemande);
 // UPDATE STATUS
 router.put("/:id/status", updateDemandeStatus);
 
+// NOUVELLE ROUTE POUR LE BADGE DE LA NAVBAR
+router.get("/notifications", controller.getNotifications);
+// ROUTE HANASORAN'NY BADGE MENA
+router.put("/notifications/read", controller.markNotificationsAsRead);
 
 module.exports = router;

@@ -52,6 +52,7 @@ app.use("/api", authRoutes);
 app.use("/api/articles", articleRoutes);
 app.use("/api/categories", categorieRoutes);
 app.use("/api/auth", authRoutes);
+app.use('/api', demandeRoutes);
 app.use("/api/demandes", demandeRoutes);
 app.use("/api/historique", historiqueRoutes);
 app.put("/api/articles/:id", async (req, res) => {

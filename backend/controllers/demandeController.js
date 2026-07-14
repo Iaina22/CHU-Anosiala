@@ -25,10 +25,9 @@ exports.getDemandesByUser = async (req, res) => {
 };
 
 
-// POST nouvelle demande
+// POST nouvelle demande + AJOUT NOTIFICATION AUTOMATIQUE
 exports.addDemande = async (req, res) => {
   try {
-
     const {
       id_user,
       prenom,
@@ -41,10 +40,11 @@ exports.addDemande = async (req, res) => {
       demande_group
     } = req.body;
 
-    await pool.query(
+    // 1. Insertion de la demande avec récupération de l'ID généré via 'RETURNING id'
+    const nouvelleDemande = await pool.query(
       `INSERT INTO ref.demandes
       (id_user, prenom, role, categorie, produit, quantiter, designation, status, demande_group)
-      VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)`,
+      VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9) RETURNING id`,
       [
         id_user,
         prenom,
@@ -58,7 +58,18 @@ exports.addDemande = async (req, res) => {
       ]
     );
 
-    res.json({ message: "Demande ajoutée" });
+    const demandeId = nouvelleDemande.rows[0].id;
+
+    // 2. Création du message personnalisé (Ex: "Mimi a envoyé une demande de [produit]")
+    const messageNotification = `${prenom || 'Un utilisateur'} a envoyé une demande pour le produit : ${produit}`;
+
+    // 3. Insertion de la notification liée à la demande dans ref.notifications
+    await pool.query(
+      `INSERT INTO ref.notifications (demande_id, message) VALUES ($1, $2)`,
+      [demandeId, messageNotification]
+    );
+
+    res.json({ message: "Demande ajoutée et notification créée" });
 
   } catch (err) {
     console.error("Erreur addDemande:", err);
@@ -171,3 +182,38 @@ exports.updateDemandeStatus = async (req, res) => {
     res.status(500).json({ error: "SERVER ERROR" });
   }
 };
+
+
+// ================= NOVELLE FONCTION: GET NOTIFICATIONS (POUR LA NAVBAR) =================
+exports.getNotifications = async (req, res) => {
+  try {
+    // Récupère l'intégralité des notifications (sans limite de quantité) de la plus récente à la plus ancienne
+    const listeNotif = await pool.query(
+      "SELECT * FROM ref.notifications ORDER BY created_at DESC"
+    );
+
+    // Compte uniquement les messages qui ne sont pas encore lus (is_read = false)
+    const totalNonLus = await pool.query(
+      "SELECT COUNT(*) FROM ref.notifications WHERE is_read = false"
+    );
+
+    res.json({
+      notifications: listeNotif.rows,
+      count: parseInt(totalNonLus.rows[0].count, 10)
+    });
+  } catch (error) {
+    console.error("Erreur getNotifications:", error);
+    res.status(500).json({ error: "Erreur serveur" });
+  }
+};
+
+exports.markNotificationsAsRead = async (req, res) => {
+  try {
+    await require("../models/demandeModel").markAllAsRead();
+    res.json({ success: true, message: "Notifications marquées comme lues" });
+  } catch (err) {
+    console.error("Erreur markNotificationsAsRead:", err);
+    res.status(500).json({ error: "Erreur serveur" });
+  }
+};
+
